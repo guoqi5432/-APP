@@ -1,0 +1,186 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>Hello APP</title>
+    <link rel="stylesheet" type="text/css" href="./css/api.css" />
+    <link rel="stylesheet" type="text/css" href="./css/css/frozenui.css" />
+    <link rel="stylesheet" type="text/css" href="./css/iconfont.css" />
+    <script src="./script/rem.js"></script>
+    <style type="text/css">
+        html,
+        body {
+            height: 100%;
+        }
+
+        .wrap {
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-flex-flow: column;
+        }
+
+        header {
+            height: 52px;
+            width: 100%;
+            text-align: center;
+            background-color: #fff;
+            color: #0087ff;
+            line-height: 52px;
+            font-size: 20px;
+        }
+
+        .flex-1 {
+            -webkit-box-flex: 1;
+            -webkit-flex: 1;
+        }
+
+        footer {
+            height: 65px;
+            width: 100%;
+            background-color: #FFF;
+            color: white;
+            line-height: 30px;
+            text-align: center;
+        }
+        footer img{
+            width: 35px;
+            margin-top: 6px;
+            display: inline-block;
+        }
+        footer span{
+            display: block;
+            margin-top: -16px;
+            font-size: 12px;
+            letter-spacing: 3px;
+            color: gray;
+        }
+        header img{
+            height: 28px;
+            margin-top: 12px;
+        }
+        .active span{
+            color: #77d5ff
+        }
+    </style>
+</head>
+
+<body class="wrap">
+    <header class="ui-border-b">
+        
+    </header>
+    <section class="flex-1">
+
+    </section>
+    <footer>
+        <div class="ui-row-flex ui-whitespace ui-border-t">
+            <div class="ui-col ui-col nav active" tapmode onclick="changeNavIndex(this,0)">
+                <img src="./image/introduction.png" alt="">
+                <span>&nbsp;首页</span>
+            </div>
+            <div class="ui-col ui-col nav" tapmode onclick="changeNavIndex(this,1)">
+                <img src="./image/news.png" alt="">
+                <span>&nbsp;任务</span>
+            </div>
+            <div class="ui-col ui-col nav" tapmode onclick="changeNavIndex(this,2)">
+                <img src="./image/message.png" alt="">
+                <span>&nbsp;账单记录</span>
+            </div>
+            <div class="ui-col ui-col nav" tapmode onclick="changeNavIndex(this,3)">
+                <img src="./image/circle.png" alt="">
+                <span>&nbsp;个人</span>
+            </div>
+        </div>
+    </footer>
+</body>
+<!-- <script src="./script/socket.js"></script> -->
+<script type="text/javascript" src="./script/api.js"></script>
+<script type="text/javascript">
+    apiready = function() {
+        $api.css($api.dom('header'),"padding-top:"+api.safeArea.top+"px")
+
+        //判断用户登录状态
+
+        // console.log(userStu)
+        if(!Boolean($api.getStorage('userStu'))){
+            api.openWin({
+                name: 'login',
+                url: './html/login.html',
+            });
+        }else{
+            loadFrames()
+        }
+
+        api.addEventListener({
+            name: 'okLogin'
+        }, function(ret, err){
+            loadFrames()
+        });
+
+
+
+        function loadFrames(){
+            api.openFrameGroup({
+                name: 'group1',
+                rect: {
+                    x: 0,
+                    y: 52+api.safeArea.top,
+                    w: 'auto',
+                    h: $api.cssVal($api.dom('.flex-1'),"height")
+                },
+                scrollEnabled:false,
+                frames: [{
+                    name: 'frame1',
+                    url: './html/frame1.html',
+                    bgColor: '#f7f7f7',
+                    bounces:true,
+                    useWKWebView:true
+                },{
+                    name: 'frame2',
+                    url: './html/frame2.html',
+                    bgColor: '#f7f7f7',
+                    bounces:true,
+                    // customRefreshHeader: 'UIPullRefreshMotive',
+                },{
+                    name: 'frame3',
+                    url: './html/frame3.html',
+                    bgColor: '#f7f7f7',
+                    bounces:true,
+                },{
+                    name: 'frame4',
+                    url: './html/frame4.html',
+                    bgColor: '#f7f7f7',
+                    bounces:true,
+                },]
+            }, function(ret, err) {
+                if(!Boolean($api.getStorage('userStu'))){
+                    api.openWin({
+                        name: 'login',
+                        url: './html/login.html',
+                    });
+                }
+                var index = ret.index;
+            });
+        }
+
+
+
+
+    };
+
+    function changeNavIndex(el,Index){
+        for(var i = 0;i<$api.domAll('.nav').length;i++){
+            $api.removeCls($api.domAll('.nav')[i], 'active');
+        }
+        $api.addCls(el, 'active');
+        api.setFrameGroupIndex({
+            name: 'group1',
+            index: Index
+        });
+    }
+
+</script>
+
+</html>
